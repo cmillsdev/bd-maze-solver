@@ -6,6 +6,7 @@ class Window:
         self.height = height
         self.__root = Tk()
         self.canvas = Canvas()
+        self.canvas.pack()
         self.running = False
         self.__root.protocol("WM_DELETE_WINDOW", self.close)
 
@@ -20,3 +21,6 @@ class Window:
 
     def close(self):
         self.running = False
+
+    def draw_line(self, line, fill_color="black"):
+        line.draw(self.canvas, fill_color)
