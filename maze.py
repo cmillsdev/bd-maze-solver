@@ -112,40 +112,36 @@ class Maze:
         self._animate()
         num_rows = self._num_rows
         num_cols = self._num_cols
+        curr = self._cells[i][j]
+        curr.visited = True
         if i == num_rows - 1 and j == num_cols - 1:
             print("Found end cell.")
             return True
-        curr = self._cells[i][j]
-        curr.visited = True
         # setup some variables
-        if i - 1 >= 0:  # left
+        if i > 0 and not curr.has_left_wall and not self._cells[i - 1][j].visited:
             other_cell = self._cells[i - 1][j]
-            if not other_cell.has_right_wall and not other_cell.visited:
-                curr.draw_move(other_cell)
-                if self._solve_r(other_cell.index[0], other_cell.index[1]):
-                    return True
-                curr.draw_move(other_cell, undo=True)
-        if i + 1 < num_rows:  # right
+            curr.draw_move(other_cell)
+            if self._solve_r(i - 1, j):
+                return True
+            curr.draw_move(other_cell, undo=True)
+        if i + 1 < num_cols and not curr.has_right_wall and not self._cells[i + 1][j].visited:
             other_cell = self._cells[i + 1][j]
-            if not other_cell.has_left_wall and not other_cell.visited:
-                curr.draw_move(other_cell)
-                if self._solve_r(other_cell.index[0], other_cell.index[1]):
-                    return True
-                curr.draw_move(other_cell, undo=True)
-        if j - 1 >= 0:  # top
+            curr.draw_move(other_cell)
+            if self._solve_r(i + 1, j):
+                return True
+            curr.draw_move(other_cell, undo=True)
+        if j > 0 and not curr.has_top_wall and not self._cells[i][j - 1].visited:
             other_cell = self._cells[i][j - 1]
-            if not other_cell.has_bottom_wall and not other_cell.visited:
-                curr.draw_move(other_cell)
-                if self._solve_r(other_cell.index[0], other_cell.index[1]):
-                    return True
-                curr.draw_move(other_cell, undo=True)
-        if j + 1 < num_cols:  # bottom
+            curr.draw_move(other_cell)
+            if self._solve_r(i, j - 1):
+                return True
+            curr.draw_move(other_cell, undo=True)
+        if j + 1 < num_rows and not curr.has_bottom_wall and not self._cells[i][j + 1].visited:
             other_cell = self._cells[i][j + 1]
-            if not other_cell.has_top_wall and not other_cell.visited:
-                curr.draw_move(other_cell)
-                if self._solve_r(other_cell.index[0], other_cell.index[1]):
-                    return True
-                curr.draw_move(other_cell, undo=True)
+            curr.draw_move(other_cell)
+            if self._solve_r(i, j + 1):
+                return True
+            curr.draw_move(other_cell, undo=True)
 
         print(f"[{curr.index[0]},{curr.index[1]}]: No reachable cell.")
         return False

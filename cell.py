@@ -25,8 +25,8 @@ class Cell:
 
     def init_geography(self):
         self._tl_corner = Point(self._x1, self._y1)
-        self._tr_corner = Point(self._x1, self._y2)
-        self._bl_corner = Point(self._x2, self._y1)
+        self._tr_corner = Point(self._x2, self._y1)
+        self._bl_corner = Point(self._x1, self._y2)
         self._br_corner = Point(self._x2, self._y2)
         self._l_line = Line(self._tl_corner, self._bl_corner)
         self._r_line = Line(self._tr_corner, self._br_corner)
@@ -53,7 +53,7 @@ class Cell:
         if self.has_bottom_wall:
             self._win.draw_line(self._b_line)
 
-        self._win.draw_text(Text(self._center, f"{self.index[0]},{self.index[1]}"))
+        # self._win.draw_text(Text(self._center, f"{self.index[0]},{self.index[1]}"))
 
         if not self.has_left_wall:
             self._win.draw_line(self._l_line, "white")
@@ -70,25 +70,11 @@ class Cell:
         else:
             line_color = "red"
 
-        center = self._center
-        other_center = to_cell._center
-        # left
-        if center.x > other_center.x and center.y == other_center.y: 
-            wall_center = self._l_line.get_center()
-        # right
-        elif center.x < other_center.x and center.y == other_center.y: 
-            wall_center = self._r_line.get_center()
-        # top
-        elif center.y < other_center.y and center.x == other_center.x: 
-            wall_center = self._t_line.get_center()
-        # bottom
-        elif center.y > other_center.y and center.x == other_center.x: 
-            wall_center = self._b_line.get_center()
+        center = self.get_center()
+        other_center = to_cell.get_center()
 
-        move_line = Line(center, wall_center)
-        move_line_to = Line(wall_center, other_center)
-        self._win.draw_line(move_line)
-        self._win.draw_line(move_line_to)
+        move_line = Line(center, other_center)
+        self._win.draw_line(move_line, line_color)
     
     def get_center(self):
         center_x = (self._x1 + self._x2)/2
