@@ -1,5 +1,6 @@
 from line import Line
 from point import Point
+from text import Text
 class Cell:
     def __init__(self, win=None):
         self.has_left_wall = True
@@ -10,11 +11,17 @@ class Cell:
         self._x2 = None
         self._y1 = None
         self._y2 = None
+        self.index = None
         self._win = win
         self.visited = False
+        self._center = None
 
     def __repr__(self):
-        return f"{self._x1},{self._y1},{self._x2},{self._y2}"
+        return (f"Cell(x1={self._x1}, y1={self._y1}, x2={self._x2}, y2={self._y2}, "
+            f"walls={{'left': {self.has_left_wall}, 'right': {self.has_right_wall}, "
+            f"'top': {self.has_top_wall}, 'bottom': {self.has_bottom_wall}}}, "
+            f"visited={self.visited})")
+
 
     def init_geography(self):
         self._tl_corner = Point(self._x1, self._y1)
@@ -27,14 +34,16 @@ class Cell:
         self._b_line = Line(self._bl_corner, self._br_corner)
         self._center = self.get_center()
 
-    def draw(self,x1,y1,x2,y2):
+    def draw(self,x1,y1,x2,y2,i,j):
         if self._win == None:
             return
         self._x1 = x1
         self._x2 = x2
         self._y1 = y1
         self._y2 = y2
-        self.init_geography()
+        self.index = [i,j]
+        if not self._center:
+            self.init_geography()
         if self.has_left_wall:
             self._win.draw_line(self._l_line)
         if self.has_right_wall:
@@ -43,6 +52,8 @@ class Cell:
             self._win.draw_line(self._t_line)
         if self.has_bottom_wall:
             self._win.draw_line(self._b_line)
+
+        self._win.draw_text(Text(self._center, f"{self.index[0]},{self.index[1]}"))
 
         if not self.has_left_wall:
             self._win.draw_line(self._l_line, "white")
